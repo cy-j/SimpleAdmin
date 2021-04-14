@@ -22,7 +22,7 @@ class SimpleUtils {
     constructor() {
     }
     static getVersion(){
-        return '1.0.6';
+        return '1.1.0';
     }
     static update_detec() {
         let container = document.getElementById('check-update');
@@ -108,7 +108,7 @@ class Simple{
         }
         let Mask = '<div class="mask"></div>';
         $("body div.main").prepend(Mask)
-        let UserInfo = "<div class=\"user-info\"><a href=\"" + AdminLink_ + "\"><img src=\"" + UserPic_ + "s=100\" /></a><p>欢迎您，<a href=\"" + AdminLink_ + "\">" + UserName_ + "</a></p></div>";
+        let UserInfo = "<div class=\"user-info\"><a href=\"" + AdminLink_ + "\"><img src=\"" + UserPic_ + "\" /></a><p>欢迎您，<a href=\"" + AdminLink_ + "\">" + UserName_ + "</a></p></div>";
         let HtmlText = ""
         if (UserGroup_ === "administrator") {
             HtmlText = "<div class=\"user-nav\"><ul><li><a href=\"" + AdminLink_ + "index.php\"><i class=\"zm zm-zu\"></i>主控制台</a></li><li><a href=\"" + AdminLink_ + "write-post.php\"><i class=\"zm zm-bianji\"></i>撰写文章</a></li><li class=\"menu-li\"><a href=\"javascript:;\"><i class=\"zm zm-quanjushuxing\"></i>全局模块<i class=\"zm zm-sanJiaoBottom right\"></i></a><ul class=\"menu-ul\">" + one + "</ul></li><li class=\"menu-li\"><a href=\"javascript:;\"><i class=\"zm zm-zhuomiankuaijiefangshi\"></i>快捷操作<i class=\"zm zm-sanJiaoBottom right\"></i></a><ul class=\"menu-ul\">" + two + "</li></ul></li><li class=\"menu-li\"><a href=\"javascript:;\"><i class=\"zm zm-leibie\"></i>内容管理<i class=\"zm zm-sanJiaoBottom right\"></i></a><ul class=\"menu-ul\">" + three + "</ul></li><li class=\"menu-li\"><a href=\"javascript:;\"><i class=\"zm zm-shezhi\"></i>网站设置<i class=\"zm zm-sanJiaoBottom right\"></i></a><ul class=\"menu-ul\">" + four + "</ul><li>" + five + "</ul></div>";
@@ -166,7 +166,8 @@ class Simple{
             }
             if (MenuTitle_ === "个人设置") {
                 let avatar = getElementsClass("profile-avatar")[0];
-                avatar.setAttribute("src", UserPic_ + "s=640");
+                let tmppic = UserPic_.replace('s=100','s=640')
+                avatar.setAttribute("src", tmppic);
                 avatar.style.width = "150px";
             }
         } else {
@@ -440,11 +441,19 @@ let Admin_index_page ={
     init:function () {
         let start_link = $('#start-link')
         let original_html = start_link.prop("outerHTML")
-        let html = '<div id="start-link" style="display:flex;flex-wrap: wrap">' +
-            `<ul class="card p-8 shadow-xl"><h3>内容管理：</h3><li class="btn btn-primary btn-ghost btn-fill"><a href="${globalConfig.write_post}">撰写文章</a></li><li class="btn btn-primary btn-ghost btn-fill"><a href="${globalConfig.write_page}">添加页面</a></li></ul>` +
-            `<ul class="card p-8 shadow-xl"><h3>主题管理：</h3><li class="btn btn-info btn-ghost btn-fill"><a href="${globalConfig.options_theme_page}">${globalConfig.theme} 主题设置</a></li><li class="btn btn-info btn-ghost btn-fill"><a href="${globalConfig.themes}">主题管理</a></li></ul>` +
-            `<ul class="card p-8 shadow-xl"><h3>其他：</h3><li class="btn btn-danger btn-ghost btn-fill"><a href="${globalConfig.plugins}">插件管理</a></li><li class="btn btn-danger btn-ghost btn-fill"><a href="${globalConfig.options_general}">系统设置</a></li></ul>` +
-            '</div>'
+        let html = ''
+        if (UserGroup_ === "administrator"){
+            html= '<div id="start-link" style="display:flex;flex-wrap: wrap">' +
+                `<ul class="card p-8 shadow-xl"><h3>内容管理：</h3><li class="btn btn-primary btn-ghost btn-fill"><a href="${globalConfig.write_post}">撰写文章</a></li><li class="btn btn-primary btn-ghost btn-fill"><a href="${globalConfig.write_page}">添加页面</a></li></ul>` +
+                `<ul class="card p-8 shadow-xl"><h3>主题管理：</h3><li class="btn btn-info btn-ghost btn-fill"><a href="${globalConfig.options_theme_page}">${globalConfig.theme} 主题设置</a></li><li class="btn btn-info btn-ghost btn-fill"><a href="${globalConfig.themes}">主题管理</a></li></ul>` +
+                `<ul class="card p-8 shadow-xl"><h3>其他：</h3><li class="btn btn-danger btn-ghost btn-fill"><a href="${globalConfig.plugins}">插件管理</a></li><li class="btn btn-danger btn-ghost btn-fill"><a href="${globalConfig.options_general}">系统设置</a></li></ul>` +
+                '</div>'
+        }else if (UserGroup_ === "editor" || UserGroup_ === "contributor"){
+            html= '<div id="start-link" style="display:flex;flex-wrap: wrap">' +
+                `<ul class="card p-8 shadow-xl"><h3>内容管理：</h3><li class="btn btn-primary btn-ghost btn-fill"><a href="${globalConfig.write_post}">撰写文章</a></li><li class="btn btn-primary btn-ghost btn-fill"><a href="${globalConfig.manage_posts}">管理文章</a></li><li class="btn btn-primary btn-ghost btn-fill"><a href="${globalConfig.manage_comments}">管理评论</a></li></ul>` +
+                '</div>'
+        }
+
         start_link.prop("outerHTML",html)
         // tepass 适配
         let tepass_icon = $('i.fa.fa-rmb')
